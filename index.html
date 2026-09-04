@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Chitro — Talk freely. Stay anonymous. | TREZNOR</title>
+  <meta name="description" content="Chitro is an anonymous social chat experience designed by TREZNOR to connect and converse without traditional public identities. Official product tour and legal documentation." />
+
+  <!-- Fonts: Inter Display & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       OBSIDIAN MONOCHROME ENGINE — TREZNOR SYSTEM SPEC
+       Zero-gradient color bleeding, pure tactile darkroom luxury
+       ========================================================================== */
+    :root {
+      --black: #000000;
+      --void: #050505;
+      --panel: #0a0a0a;
+      --panel-elevated: #111111;
+      --panel-hover: #151515;
+      
+      --line-subtle: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.16);
+      --line-glow: rgba(255, 255, 255, 0.35);
+
+      --text-100: #ffffff;
+      --text-70: #a1a1aa;
+      --text-40: #52525b;
+      --text-20: #27272a;
+
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --ease-fluid: cubic-bezier(0.19, 1, 0.22, 1);
+      --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--black);
+      color: var(--text-100);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background: var(--black);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    ::selection {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    /* ==========================================================================
+       HARDWARE-ACCELERATED AMBIENT CANVAS & BACKGROUND
+       ========================================================================== */
+    #noiseCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.04;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 75vh;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(255, 255, 255, 0.08), transparent 70%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 3;
+    }
+
+    /* ==========================================================================
+       CUSTOM GEOMETRIC SYSTEM GLYPHS (NO GENERIC AI ICONS)
+       Ultra-sharp, scalable mathematical monochrome symbols
+       ========================================================================== */
+    .glyph {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+
+    .glyph svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    /* ==========================================================================
+       NAVIGATION (STICKY + GLASS + MOBILE FLUID DRAWER)
+       ========================================================================== */
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--line-subtle);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ffffff;
+      animation: pulseDot 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.75); }
+    }
+
+    .brand-studio {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-40);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      border-left: 1px solid var(--line-subtle);
+      padding-left: 0.85rem;
+      font-weight: 500;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      font-size: 0.825rem;
+      font-weight: 500;
+      color: var(--text-70);
+      text-decoration: none;
+      transition: color 0.2s var(--ease-fluid);
+      letter-spacing: -0.01em;
+    }
+
+    .nav-menu a:hover {
+      color: #ffffff;
+    }
+
+    .mobile-btn {
+      display: none;
+      background: #000000;
+      border: 1px solid var(--line-strong);
+      color: #ffffff;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s var(--ease-fluid);
+    }
+
+    .mobile-btn:active {
+      transform: scale(0.92);
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      width: 100vw;
+      height: calc(100dvh - 72px);
+      background: #000000;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s var(--ease-fluid);
+      z-index: 998;
+      overflow-y: auto;
+    }
+
+    .mobile-drawer.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-drawer a {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text-70);
+      text-decoration: none;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-drawer a:active {
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       HERO SECTION — HIGH-END CINEMATIC
+       ========================================================================== */
+    .hero {
+      min-height: 84vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6.5rem 0 5.5rem;
+      border-bottom: 1px solid var(--line-subtle);
+    }
+
+    .hero-content {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .system-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-70);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line-subtle);
+      padding: 0.4rem 0.95rem;
+      border-radius: 9999px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-heading {
+      font-size: clamp(3.75rem, 9vw, 6.75rem);
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      line-height: 0.92;
+      color: #ffffff;
+      margin-bottom: 1.35rem;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+      color: var(--text-70);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--text-40);
+      max-width: 640px;
+      margin: 0 auto 2.75rem;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    /* Buttons with tactile feedback */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.9rem 1.75rem;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s var(--ease-fluid);
+    }
+
+    .btn-solid {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #ffffff;
+    }
+
+    .btn-solid:hover {
+      background: #e4e4e7;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-solid:active { transform: translateY(0); }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.02);
+      color: #ffffff;
+      border: 1px solid var(--line-strong);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: var(--line-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:active { transform: translateY(0); }
+
+    /* ==========================================================================
+       SECTION SHELL ARCHITECTURE
+       ========================================================================== */
+    .section-wrap {
+      padding: 7rem 0;
+      border-bottom: 1px solid var(--line-subtle);
+      position: relative;
+    }
+
+    .section-head {
+      margin-bottom: 3.75rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 2.85rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin: 1rem 0 0.75rem;
+      line-height: 1.1;
+    }
+
+    .section-head p {
+      color: var(--text-70);
+      font-size: 1.05rem;
+      max-width: 620px;
+    }
+
+    /* High-Performance Micro-Border Cards */
+    .b-card {
+      background: var(--panel);
+      border: 1px solid var(--line-subtle);
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s var(--ease-fluid), transform 0.25s var(--ease-fluid), background 0.25s var(--ease-fluid);
+      will-change: transform;
+    }
+
+    .b-card:hover {
+      border-color: var(--line-strong);
+      background: var(--panel-elevated);
+      transform: translateY(-3px);
+    }
+
+    /* ==========================================================================
+       SECTION 1: HOW CHITRO WORKS (TIMELINE GRID)
+       ========================================================================== */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+
+    .how-box {
+      padding: 2.25rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-40);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+
+    .glyph-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #000000;
+      border: 1px solid var(--line-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .how-box h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.65rem;
+    }
+
+    .how-box p {
+      font-size: 0.925rem;
+      color: var(--text-70);
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       SECTION 2: COMPLETE APP TOUR (INTERACTIVE TACTILE MOCKUPS)
+       ========================================================================== */
+    .tour-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .tour-box {
+      padding: 1.85rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tour-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .tour-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-70);
+      border: 1px solid var(--line-subtle);
+      background: #000000;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+
+    /* Responsive Live Mobile Frame */
+    .phone-viewport {
+      background: #000000;
+      border: 1px solid var(--line-subtle);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-height: 125px;
+      justify-content: center;
+      position: relative;
+    }
+
+    .viewport-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.4rem;
+    }
+
+    .viewport-title {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-40);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .viewport-body {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #ffffff;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .viewport-note {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-40);
+    }
+
+    .tour-box h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .tour-box p {
+      font-size: 0.9rem;
+      color: var(--text-70);
+      line-height: 1.6;
+    }
+
+    /* Irreversible Deletion Warning Card */
+    .danger-card {
+      grid-column: 1 / -1;
+      border-color: var(--line-strong);
+      background: #0b0b0b;
+      padding: 2.25rem;
+    }
+
+    .danger-layout {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .danger-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: #000000;
+      border: 1px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .danger-text h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.65rem;
+    }
+
+    .danger-text p {
+      font-size: 0.95rem;
+      color: #cccccc;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ==========================================================================
+       LEGAL PANELS (PRIVACY POLICY & TERMS OF SERVICE)
+       ========================================================================== */
+    .legal-body {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .callout-box {
+      background: var(--panel);
+      border: 1px solid var(--line-subtle);
+      border-left: 3px solid #ffffff;
+      padding: 1.35rem 1.65rem;
+      border-radius: 12px;
+      margin-bottom: 3rem;
+    }
+
+    .callout-box p {
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .clause {
+      margin-bottom: 3.5rem;
+    }
+
+    .clause h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid var(--line-subtle);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .clause p {
+      color: var(--text-70);
+      font-size: 0.965rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .clause ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+
+    .clause ul li {
+      position: relative;
+      padding-left: 1.5rem;
+      color: var(--text-70);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .clause ul li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.65em;
+      width: 4px;
+      height: 4px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    /* Responsive Data Tables */
+    .table-frame {
+      overflow-x: auto;
+      margin: 2rem 0;
+      border: 1px solid var(--line-subtle);
+      border-radius: 12px;
+      background: #000000;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.8875rem;
+    }
+
+    th {
+      background: #0a0a0a;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    td {
+      padding: 1.15rem 1.25rem;
+      border-bottom: 1px solid var(--line-subtle);
+      color: var(--text-70);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tech-pill {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: #111111;
+      border: 1px solid var(--line-strong);
+      color: #ffffff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       SECTION 5: SUBSCRIPTIONS
+       ========================================================================== */
+    .subs-panel {
+      padding: 2.75rem 2.25rem;
+      background: #080808;
+      border: 1px solid var(--line-subtle);
+      border-radius: 18px;
+    }
+
+    .subs-panel h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+    }
+
+    /* ==========================================================================
+       SECTION 6 & 7: SAFETY & MODERATION
+       ========================================================================== */
+    .safety-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .safety-box {
+      padding: 2.25rem 1.75rem;
+    }
+
+    .safety-box h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+    }
+
+    .safety-box p {
+      font-size: 0.925rem;
+      color: var(--text-70);
+      line-height: 1.6;
+    }
+
+    .mod-wrap {
+      padding: 2.5rem;
+      background: #050505;
+      border: 1px solid var(--line-subtle);
+      border-radius: 18px;
+    }
+
+    .mod-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .mod-item {
+      border-left: 2px solid var(--line-strong);
+      padding-left: 1.5rem;
+    }
+
+    .mod-item h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .mod-item p {
+      font-size: 0.925rem;
+      color: var(--text-70);
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       SECTION 8: FAQ (ACCORDION WITH GPU TRANSITIONS)
+       ========================================================================== */
+    .faq-stack {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .faq-card {
+      background: var(--panel);
+      border: 1px solid var(--line-subtle);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s var(--ease-fluid);
+    }
+
+    .faq-card:hover {
+      border-color: var(--line-strong);
+    }
+
+    .faq-card.active {
+      border-color: var(--line-glow);
+    }
+
+    .faq-toggle {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 1.4rem 1.65rem;
+      text-align: left;
+      font-family: var(--font-sans);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .faq-toggle .glyph {
+      transition: transform 0.35s var(--ease-fluid);
+      color: var(--text-40);
+    }
+
+    .faq-card.active .faq-toggle .glyph {
+      transform: rotate(180deg);
+      color: #ffffff;
+    }
+
+    .faq-tray {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s var(--ease-fluid);
+      background: #000000;
+    }
+
+    .faq-text {
+      padding: 1.4rem 1.65rem;
+      color: var(--text-70);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ==========================================================================
+       SECTION 9: CONTACT & SUPPORT
+       ========================================================================== */
+    .contact-card {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3.5rem 2.5rem;
+      text-align: center;
+      background: #080808;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+      text-align: left;
+    }
+
+    .contact-unit {
+      background: #000000;
+      border: 1px solid var(--line-subtle);
+      border-radius: 12px;
+      padding: 1.4rem;
+    }
+
+    .contact-unit:hover {
+      border-color: var(--line-strong);
+    }
+
+    .contact-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-40);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .contact-val a {
+      font-size: 0.95rem;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact-val a:hover {
+      color: var(--text-70);
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .site-footer {
+      background: #000000;
+      border-top: 1px solid var(--line-subtle);
+      padding: 5rem 0 3rem;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 3rem;
+      margin-bottom: 4rem;
+    }
+
+    .footer-lead h4 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-lead p {
+      font-size: 0.95rem;
+      color: var(--text-70);
+      max-width: 320px;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-credit {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-40);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .footer-cols {
+      display: flex;
+      gap: 4.5rem;
+    }
+
+    .footer-col h5 {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-40);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-col a {
+      font-size: 0.88rem;
+      color: var(--text-70);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-col a:hover {
+      color: #ffffff;
+    }
+
+    .footer-bar {
+      border-top: 1px solid var(--line-subtle);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-40);
+    }
+
+    /* ==========================================================================
+       100% RESPONSIVE MOBILE ADJUSTMENTS
+       ========================================================================== */
+    @media (max-width: 992px) {
+      .how-grid { grid-template-columns: repeat(2, 1fr); }
+      .tour-grid { grid-template-columns: repeat(2, 1fr); }
+      .safety-grid { grid-template-columns: 1fr; }
+      .mod-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .footer-cols { gap: 2.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-menu { display: none; }
+      .mobile-btn { display: flex; }
+      .hero { min-height: auto; padding: 5rem 0 4rem; }
+      .how-grid { grid-template-columns: 1fr; }
+      .tour-grid { grid-template-columns: 1fr; }
+      .danger-layout { flex-direction: column; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-top { flex-direction: column; }
+      .footer-cols { flex-direction: column; gap: 2rem; }
+      .section-wrap { padding: 5rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 60FPS Ambient Noise Canvas & Glow -->
+  <canvas id="noiseCanvas"></canvas>
+  <div class="ambient-glow"></div>
+
+  <!-- ==========================================================================
+       NAVIGATION BAR
+       ========================================================================== -->
+  <header class="nav-wrapper">
+    <div class="container nav-inner">
+      <a href="#hero" class="brand-mark">
+        <span class="brand-title">Chitro<span class="live-dot"></span></span>
+        <span class="brand-studio">TREZNOR</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#app-tour">App Tour</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#terms">Terms</a></li>
+          <li><a href="#safety">Safety</a></li>
+          <li><a href="#subscriptions">Subscriptions</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <button class="mobile-btn" id="mobileBtn" aria-label="Toggle Menu">
+        <span class="glyph">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </span>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-drawer" id="mobileDrawer">
+      <a href="#hero" class="drawer-item">Home <span>&rarr;</span></a>
+      <a href="#how-it-works" class="drawer-item">How It Works <span>&rarr;</span></a>
+      <a href="#app-tour" class="drawer-item">App Tour <span>&rarr;</span></a>
+      <a href="#privacy" class="drawer-item">Privacy Policy <span>&rarr;</span></a>
+      <a href="#terms" class="drawer-item">Terms of Service <span>&rarr;</span></a>
+      <a href="#safety" class="drawer-item">Safety Guidelines <span>&rarr;</span></a>
+      <a href="#subscriptions" class="drawer-item">Subscriptions <span>&rarr;</span></a>
+      <a href="#faq" class="drawer-item">FAQ <span>&rarr;</span></a>
+      <a href="#contact" class="drawer-item">Contact <span>&rarr;</span></a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==========================================================================
+         HERO SECTION
+         ========================================================================== -->
+    <section class="hero" id="hero">
+      <div class="container hero-content">
+        <div class="system-badge">
+          <span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+          Created by TREZNOR
+        </div>
+        <h1 class="hero-heading">Chitro</h1>
+        <p class="hero-sub">Talk freely. Stay anonymous.</p>
+        <p class="hero-desc">
+          Chitro is an anonymous social chat experience designed to help people connect, discover new conversations, and build friendships without requiring a traditional public identity.
+        </p>
+        <div class="hero-actions">
+          <a href="#how-it-works" class="btn btn-solid">
+            Explore Chitro
+            <span class="glyph"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></span>
+          </a>
+          <a href="#privacy" class="btn btn-outline">Privacy Policy</a>
+          <a href="#terms" class="btn btn-outline">Terms of Service</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECTION 1: HOW CHITRO WORKS
+         ========================================================================== -->
+    <section class="section-wrap" id="how-it-works">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg></span>
+            Protocol Architecture
+          </div>
+          <h2>How Chitro Works</h2>
+          <p>A streamlined structure engineered around identity minimization and intentional conversation discovery.</p>
+        </div>
+
+        <div class="how-grid">
+          <div class="b-card how-box">
+            <span class="step-tag">STEP // 01</span>
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></span>
+            </div>
+            <h3>Create Your Anonymous Identity</h3>
+            <p>Start Chitro by creating an anonymous identity. Your Chitro identity is separate from a traditional public social-media profile.</p>
+          </div>
+
+          <div class="b-card how-box">
+            <span class="step-tag">STEP // 02</span>
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg></span>
+            </div>
+            <h3>Discover People</h3>
+            <p>Use Random Partner Search to discover another available Chitro user and start a conversation.</p>
+          </div>
+
+          <div class="b-card how-box">
+            <span class="step-tag">STEP // 03</span>
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg></span>
+            </div>
+            <h3>Make Friends</h3>
+            <p>Users can build connections and add people as friends so they can continue interacting with them.</p>
+          </div>
+
+          <div class="b-card how-box">
+            <span class="step-tag">STEP // 04</span>
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg></span>
+            </div>
+            <h3>Keep Control</h3>
+            <p>Manage your identity, connections, privacy and subscription from within the app.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 2: COMPLETE APP TOUR
+       ========================================================================== -->
+    <section class="section-wrap" id="app-tour">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></span>
+            Live Inspection
+          </div>
+          <h2>Complete App Tour</h2>
+          <p>Step-by-step breakdown of user pathways, interface panels, and core account operations.</p>
+        </div>
+
+        <div class="tour-grid">
+          <!-- 01 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">01</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">FIREBASE_AUTH</span>
+                <span class="tech-pill">ACTIVE</span>
+              </div>
+              <div class="viewport-body">ANONYMOUS_SESSION_INIT</div>
+              <div class="viewport-note">Decoupled from real-world profile</div>
+            </div>
+            <h3>Anonymous Login</h3>
+            <p>The app enables immediate access through anonymous onboarding, decoupling access credentials from standard personal identification markers.</p>
+          </div>
+
+          <!-- 02 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">02</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 0 0 8 11a4 4 0 1 1 8 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0 0 15.5 16m-.218-5.5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">IDENTITY_KEY</span>
+                <span class="tech-pill">SECURE</span>
+              </div>
+              <div class="viewport-body">UID: chtr_anon_849f...</div>
+              <div class="viewport-note">Isolated pseudonymous identifier</div>
+            </div>
+            <h3>Anonymous ID</h3>
+            <p>Chitro creates an isolated, pseudonymous identity key specifically scoped to your app instance, preventing external profile crawling.</p>
+          </div>
+
+          <!-- 03 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">03</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">MATCH_QUEUE</span>
+                <span class="tech-pill">SEEKING</span>
+              </div>
+              <div class="viewport-body">SEARCHING_ACTIVE_PEER...</div>
+              <div class="viewport-note">Unweighted spontaneous matching</div>
+            </div>
+            <h3>Random Partner Search</h3>
+            <p>Connect with active participants through an on-demand matching queue designed for fast, unweighted dialogue initiation.</p>
+          </div>
+
+          <!-- 04 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">04</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">ABLY_REALTIME</span>
+                <span class="tech-pill">STREAM</span>
+              </div>
+              <div class="viewport-body">PEER_ESTABLISHED</div>
+              <div class="viewport-note">Zero long-term message retention</div>
+            </div>
+            <h3>Start Chatting</h3>
+            <p>Engage in direct, streamlined text exchange within a distraction-free interface built exclusively around real-time messaging.</p>
+          </div>
+
+          <!-- 05 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">05</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">LINK_REQUEST</span>
+                <span class="tech-pill">PENDING</span>
+              </div>
+              <div class="viewport-body">HANDSHAKE_TRANSMITTED</div>
+              <div class="viewport-note">Mutual friend consent required</div>
+            </div>
+            <h3>Add Friends</h3>
+            <p>Extend a mutual connection invitation during or following a chat session to transition transient peers into your saved contacts.</p>
+          </div>
+
+          <!-- 06 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">06</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">FIREBASE_DOC</span>
+                <span class="tech-pill">STORED</span>
+              </div>
+              <div class="viewport-body">SAVED_ROSTER_LOADED</div>
+              <div class="viewport-note">Direct messaging with contacts</div>
+            </div>
+            <h3>Friends Management</h3>
+            <p>Maintain your accepted connections roster, start repeat direct chats, or delete connections at your sole discretion.</p>
+          </div>
+
+          <!-- 07 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">07</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">GOOGLE_PLAY</span>
+                <span class="tech-pill">BILLING</span>
+              </div>
+              <div class="viewport-body">ENTITLEMENT_SYNCED</div>
+              <div class="viewport-note">Bound strictly to active anonymous UID</div>
+            </div>
+            <h3>Subscription Access</h3>
+            <p>Chitro offers subscription tiers processed through Google Play, associated directly with your anonymous app identifier.</p>
+          </div>
+
+          <!-- 08 -->
+          <div class="b-card tour-box">
+            <div class="tour-top">
+              <span class="tour-num">08</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+            </div>
+            <div class="phone-viewport">
+              <div class="viewport-header">
+                <span class="viewport-title">SETTINGS</span>
+                <span class="tech-pill">LOCAL</span>
+              </div>
+              <div class="viewport-body">PRIVACY_CONFIG: MAX</div>
+              <div class="viewport-note">Manage blocks, alerts, and sessions</div>
+            </div>
+            <h3>Account Settings</h3>
+            <p>Access settings to adjust notification parameters, manage block rosters, audit connection permissions, and supervise session data.</p>
+          </div>
+
+          <!-- 09 (Warning Card) -->
+          <div class="b-card danger-card">
+            <div class="danger-layout">
+              <div class="danger-icon">
+                <span class="glyph"><svg viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+              </div>
+              <div class="danger-text">
+                <span class="tour-num" style="display:inline-block; margin-bottom: 0.5rem;">09 // IRREVERSIBLE OPERATION</span>
+                <h3>Delete Anonymous ID</h3>
+                <p><strong>Deleting your anonymous Chitro ID is permanent. Your anonymous identity cannot be recovered after deletion.</strong></p>
+                <p><strong>If your anonymous ID is deleted, any subscription associated with that anonymous identity will end and cannot be transferred to a new anonymous identity.</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 3: PRIVACY POLICY
+       ========================================================================== -->
+    <section class="section-wrap" id="privacy">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+            Privacy Architecture
+          </div>
+          <h2>Privacy Policy</h2>
+          <p>Effective Date: September 2026. A clear accounting of our data minimization protocols and operational boundaries.</p>
+        </div>
+
+        <div class="legal-body">
+          <div class="callout-box">
+            <p>Chitro is designed around anonymous identities, but anonymous does not necessarily mean that no technical information is processed. Certain information may be required to operate, secure, maintain, and improve the service.</p>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg></span>
+              1. Information We May Collect
+            </h3>
+            <p>Chitro adheres strictly to data minimization principles. We only collect and process data categories that are technically required to deliver our core communications functionality:</p>
+            <ul>
+              <li><strong>Anonymous account/identity information:</strong> System-generated anonymous user identifier keys managed via Firebase to maintain app sessions and recognize saved contacts without storing personal real-world identities.</li>
+              <li><strong>Friend/connection information:</strong> Pointers linking anonymous identifier keys in Firebase to support user-authorized persistent friend relationships.</li>
+              <li><strong>Subscription information:</strong> Purchase tokens and subscription entitlement validity provided via Google Play Store billing APIs. We do not process or store credit card or payment card details.</li>
+              <li><strong>Device & app information:</strong> Device model, operating system version, and application build metadata required for client optimization and troubleshooting.</li>
+              <li><strong>Technical & log information:</strong> Operational diagnostic logs and network transport records generated during client-server sync.</li>
+              <li><strong>Notification information:</strong> Platform-issued push tokens where users voluntarily opt into notifications for incoming messages or friend pings.</li>
+              <li><strong>Media information:</strong> Processed through Cloudinary only if media sharing features are explicitly utilized.</li>
+            </ul>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></span>
+              2. How We Use Information
+            </h3>
+            <p>Information processed by Chitro is exclusively allocated toward explicit operational obligations:</p>
+            <ul>
+              <li>To provide, operate, and maintain the Chitro application.</li>
+              <li>To route real-time messages between participants using Ably.</li>
+              <li>To execute random partner search queues and pair available peers.</li>
+              <li>To store, manage, and render user-authorized friend rosters.</li>
+              <li>To validate and grant feature entitlement associated with active Play Store subscriptions.</li>
+              <li>To maintain infrastructure stability, investigate crash reports, and prevent automated abuse or rate abuse.</li>
+              <li>To enforce our Community Guidelines and safeguard users from malicious behavior.</li>
+            </ul>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg></span>
+              3. Third-Party Service Providers
+            </h3>
+            <p>Core infrastructure elements are delegated to established technology partners under strict service agreements:</p>
+
+            <div class="table-frame">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Service Role</th>
+                    <th>Designated Provider</th>
+                    <th>Data Processed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Database & Storage</td>
+                    <td><span class="tech-pill">Firebase</span></td>
+                    <td>Anonymous ID keys, connection links, and app metadata</td>
+                  </tr>
+                  <tr>
+                    <td>Real-Time Messaging</td>
+                    <td><span class="tech-pill">Ably</span></td>
+                    <td>Active message payloads, session tokens, and peer delivery packets</td>
+                  </tr>
+                  <tr>
+                    <td>Media Storage</td>
+                    <td><span class="tech-pill">Cloudinary</span></td>
+                    <td>Transmitted attachments or media tokens (when media sharing is enabled)</td>
+                  </tr>
+                  <tr>
+                    <td>Payment Processing</td>
+                    <td><span class="tech-pill">Google Play Store</span></td>
+                    <td>Transaction validation tokens, entitlement status, and platform receipts</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+              4. Data Retention
+            </h3>
+            <p>We do not retain information longer than required for operational integrity and service stability:</p>
+            <ul>
+              <li><strong>Chat Messages:</strong> Transient by default; messages are processed in real-time and retained only for temporary transit and short-term delivery verification before being purged.</li>
+              <li><strong>Account & Identity Metadata:</strong> Maintained for the duration of the active anonymous account instance. Once an account is deleted by the user, identity tokens are permanently deleted from Firebase.</li>
+              <li><strong>Network & Operational Logs:</strong> Retained for a rolling period of up to 30 days for telemetry, abuse mitigation, and server security analysis before automatic deletion.</li>
+            </ul>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></span>
+              5. Account & Anonymous ID Deletion
+            </h3>
+            <p>When you delete your anonymous Chitro identity, the identity cannot be recovered. Deletion permanently removes or disconnects information associated with that identity from our Firebase databases, subject only to transient technical backup cycles.</p>
+            <p>Any subscription associated with the deleted anonymous identity will end and is not transferable to another anonymous identity.</p>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+              6. Children's Privacy
+            </h3>
+            <p>Chitro is strictly intended for individuals who satisfy the age of consent. The minimum required age is <strong>13 years old</strong>. Individuals under the age of 13 are strictly prohibited from using Chitro under any circumstances. If we determine that an account is operated by an individual under 13, the identity and its data are immediately terminated.</p>
+          </div>
+
+          <div class="clause">
+            <h3>
+              <span class="glyph"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+              7. Security Measures
+            </h3>
+            <p>We implement industry-standard technical and organizational precautions, including encrypted TLS in-transit communications and restricted database access control. However, no internet transmission or digital storage infrastructure is entirely infallible. We explicitly do not make claims of "100% security" or "guaranteed complete anonymity" against device-level vulnerabilities, local operating system compromises, or unauthorized client tampering.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 4: TERMS OF SERVICE
+       ========================================================================== -->
+    <section class="section-wrap" id="terms">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+            Legal Framework
+          </div>
+          <h2>Terms of Service</h2>
+          <p>Binding contract governing usage of the Chitro application, operated by TREZNOR.</p>
+        </div>
+
+        <div class="legal-body">
+          <div class="clause">
+            <h3>1. Acceptance of Terms</h3>
+            <p>By downloading, installing, accessing, or using Chitro, you agree to be bound by these Terms of Service. If you do not agree to these terms, you must discontinue use immediately and delete your application instance.</p>
+          </div>
+
+          <div class="clause">
+            <h3>2. Eligibility</h3>
+            <p>You must be at least <strong>13 years of age</strong> to access or use the service. By using Chitro, you represent and warrant that you possess the legal capacity to form a binding agreement under the laws of your applicable jurisdiction.</p>
+          </div>
+
+          <div class="clause">
+            <h3>3. Anonymous Accounts & User Responsibilities</h3>
+            <p>Because Chitro uses pseudonymous credentials, you are responsible for maintaining control of your client application instance. You agree not to attempt to reverse engineer, decompile, intercept, or tamper with Chitro’s authentication and communication systems.</p>
+          </div>
+
+          <div class="clause">
+            <h3>4. Prohibited Conduct</h3>
+            <p>You agree not to engage in any prohibited conduct on Chitro, including but not limited to:</p>
+            <ul>
+              <li><strong>Harassment and Abuse:</strong> Stalking, threatening, intimidating, or bullying other chat participants.</li>
+              <li><strong>Impersonation:</strong> Misrepresenting yourself as another person, entity, or Chitro representative.</li>
+              <li><strong>Spam & Manipulation:</strong> Transmitting unsolicited bulk text, commercial solicitations, automated scripts, or bot traffic.</li>
+              <li><strong>Illegal Content:</strong> Distributing, requesting, or sharing child sexual abuse material (CSAM), non-consensual sexual content, terrorism, hate speech, or any material violating applicable national or international laws.</li>
+            </ul>
+          </div>
+
+          <div class="clause">
+            <h3>5. Subscriptions, Payments & Refunds</h3>
+            <p>Chitro subscriptions are billed through Google Play Store in accordance with Google Play Terms of Service. Subscriptions automatically renew unless cancelled through Google Play account settings prior to the billing cycle renewal date.</p>
+            <p><strong>Refund Policy:</strong> All subscription purchases are final with <strong>no refunds</strong> offered directly by Chitro or TREZNOR. Any refund inquiries must be processed strictly through and under the discretionary policies of Google Play.</p>
+          </div>
+
+          <div class="clause">
+            <h3>6. Service Availability & Disclaimers</h3>
+            <p>Chitro is provided strictly on an <strong>"AS IS"</strong> and <strong>"AS AVAILABLE"</strong> basis without warranties of any kind, whether express, statutory, or implied. TREZNOR does not warrant that the app will operate without interruption, lag, or technical errors.</p>
+          </div>
+
+          <div class="clause">
+            <h3>7. Limitation of Liability</h3>
+            <p>To the maximum extent permitted by applicable law, TREZNOR and its operators shall not be liable for any indirect, incidental, punitive, special, or consequential damages arising out of or in connection with your use of Chitro, peer interactions, message transmissions, or lost connection data.</p>
+          </div>
+
+          <div class="clause">
+            <h3>8. Governing Law</h3>
+            <p>These Terms shall be governed by and construed in accordance with applicable laws, without giving effect to any conflict of law principles. Any dispute arising from these Terms or your use of the service shall be resolved through competent courts having appropriate jurisdiction.</p>
+          </div>
+
+          <div class="clause">
+            <h3>9. Changes to Terms</h3>
+            <p>We reserve the right to revise or update these terms at our discretion. Continued use of Chitro after revisions are published constitutes acceptance of the amended terms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 5: SUBSCRIPTIONS
+       ========================================================================== -->
+    <section class="section-wrap" id="subscriptions">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+            Tier Architecture
+          </div>
+          <h2>Subscriptions</h2>
+          <p>Clear, direct feature upgrades tied directly to your anonymous client identifier.</p>
+        </div>
+
+        <div class="legal-body">
+          <div class="subs-panel">
+            <h3>In-App Subscription Management</h3>
+            <p style="color: var(--text-70); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.25rem;">
+              Chitro offers premium upgrades processed through Google Play. All tier capabilities, matching priorities, and subscription statuses are linked directly to your active anonymous device instance.
+            </p>
+            <p style="color: var(--text-70); font-size: 0.95rem; line-height: 1.7;">
+              Active subscriptions are subject to Google Play billing regulations. You can cancel your subscription at any time via the Subscriptions section within your Google Play Store app settings.
+            </p>
+          </div>
+
+          <div class="callout-box" style="margin-top: 1.75rem;">
+            <p>
+              <strong>Critical Subscription Rule:</strong> Subscription access is associated with the anonymous identity used to purchase or activate the subscription. Because anonymous identities cannot be recovered, deleting an anonymous identity permanently removes access associated with that identity. Subscriptions cannot be transferred to another anonymous identity, and purchases are non-refundable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 6 & 7: SAFETY & MODERATION
+       ========================================================================== -->
+    <section class="section-wrap" id="safety">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+            Safety Measures
+          </div>
+          <h2>Safety & Community Guidelines</h2>
+          <p>Rules ensuring peer dialogues remain protective of privacy and free from harmful conduct.</p>
+        </div>
+
+        <div class="safety-grid">
+          <div class="b-card safety-box">
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></span>
+            </div>
+            <h3>Be Respectful</h3>
+            <p>Zero tolerance for harassment, hate speech, threats, bullying, extortion, or targeted degradation of another participant.</p>
+          </div>
+
+          <div class="b-card safety-box">
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg></span>
+            </div>
+            <h3>Protect Sensitive Data</h3>
+            <p>Do not share passwords, financial records, home addresses, government IDs, or phone numbers with anonymous connections.</p>
+          </div>
+
+          <div class="b-card safety-box">
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></span>
+            </div>
+            <h3>No Illegal Use</h3>
+            <p>Chitro must never be utilized to promote or coordinate illegal acts, trade restricted contraband, or spread exploitative materials.</p>
+          </div>
+
+          <div class="b-card safety-box">
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></span>
+            </div>
+            <h3>No Spam or Abuse</h3>
+            <p>Automated scripts, repetitive unsolicited marketing, link injection, and service disruption activities are strictly prohibited.</p>
+          </div>
+
+          <div class="b-card safety-box">
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg></span>
+            </div>
+            <h3>Report Problems</h3>
+            <p>Flag non-compliant behavior directly inside the chat interface to submit an incident review request.</p>
+          </div>
+
+          <div class="b-card safety-box">
+            <div class="glyph-box">
+              <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></span>
+            </div>
+            <h3>Block Users</h3>
+            <p>Terminate interaction immediately using the block tool. Blocked peers cannot match with you or access your messaging thread.</p>
+          </div>
+        </div>
+
+        <div class="mod-wrap">
+          <div class="system-badge" style="margin-bottom: 0.75rem;">
+            <span class="glyph"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></span>
+            Enforcement Logic
+          </div>
+          <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 0.5rem;">Reporting & Safety Actions</h3>
+          <p style="color: var(--text-70); font-size: 0.95rem;">How reports, safety flags, and community violations are enforced within Chitro.</p>
+
+          <div class="mod-grid">
+            <div class="mod-item">
+              <h4>1. Report Submission</h4>
+              <p>Participants initiate a report directly from active conversations by selecting standard violation categories such as harassment, inappropriate media, or spam.</p>
+            </div>
+            <div class="mod-item">
+              <h4>2. Enforcement Actions</h4>
+              <p>Verified infractions may trigger temporary queue bans, permanent anonymous identifier terminations, or blacklisting of offending device tokens.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 8: FAQ (ACCORDION)
+       ========================================================================== -->
+    <section class="section-wrap" id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div class="system-badge">
+            <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+            Inquiries
+          </div>
+          <h2>Frequently Asked Questions</h2>
+          <p>Direct clarifications regarding identity mechanics, subscription rules, and data retention.</p>
+        </div>
+
+        <div class="faq-stack">
+          <!-- Item 1 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>What is Chitro?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Chitro is an anonymous social chat platform designed by TREZNOR to enable spontaneous, private peer conversations without requiring traditional public profiles.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>Is Chitro anonymous?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Yes. Chitro does not link your conversations to a real name or public profile. However, anonymous does not mean zero data; technical tokens and system identifiers are processed through Firebase and Ably to route messages and secure the platform.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>How does Random Partner Search work?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Random Partner Search places your active session into a live matching queue, pairing you directly with another available user searching at that moment.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>Can I add people as friends?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Yes. During or after conversations, you can send a mutual friend connection request. Once accepted, both parties retain access to direct messaging.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>Can I recover my anonymous ID after deleting it?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                No. Deleting your anonymous Chitro ID is permanent. Because our system is built to decouple your personal identity, no recovery tokens exist.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>What happens to my subscription if I delete my anonymous ID?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Any subscription associated with a deleted anonymous ID ends immediately. Subscriptions cannot be transferred to newly created anonymous accounts, and purchases are non-refundable.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 7 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>Does Chitro store messages?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Chat messages are handled transiently through Ably to deliver real-time communication packets and are not maintained long-term on our servers.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 8 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>What information does Chitro collect?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Chitro processes anonymous tokens via Firebase, message transit payloads via Ably, media files via Cloudinary (if shared), Play Store subscription verification tokens, and standard diagnostic logs.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 9 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>Can I report another user?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Yes. You can report violations directly through the options menu inside any active chat session.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 10 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>Can I block someone?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Yes. Blocking a user immediately ends the conversation and prevents that identity from matching with you again in the random search queue.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 11 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>How do subscriptions work?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                Subscriptions are managed directly through Google Play Store billing and are bound exclusively to your active anonymous device identifier.
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 12 -->
+          <div class="faq-card">
+            <button class="faq-toggle">
+              <span>How can I contact Chitro?</span>
+              <span class="glyph"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </button>
+            <div class="faq-tray">
+              <div class="faq-text">
+                You can reach our administrative, legal, and support desks directly via email at treznornx@gmail.com.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+       SECTION 9: CONTACT & SUPPORT
+       ========================================================================== -->
+    <section class="section-wrap" id="contact">
+      <div class="container">
+        <div class="b-card contact-card">
+          <div class="system-badge" style="margin-bottom: 1rem;">
+            <span class="glyph"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></span>
+            Direct Inquiries
+          </div>
+          <h2 style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 0.75rem;">Need help?</h2>
+          <p style="color: var(--text-70); font-size: 1.05rem;">For questions about Chitro, privacy, subscriptions, safety, or account issues, contact the Chitro team.</p>
+
+          <div class="contact-grid">
+            <div class="contact-unit">
+              <div class="contact-label">
+                <span class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"></line><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"></line><line x1="14.83" y1="9.17" x2="18.36" y2="5.64"></line><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line></svg></span>
+                General Support
+              </div>
+              <div class="contact-val">
+                <a href="mailto:treznornx@gmail.com">treznornx@gmail.com</a>
+              </div>
+            </div>
+
+            <div class="contact-unit">
+              <div class="contact-label">
+                <span class="glyph"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                Privacy & Legal Desk
+              </div>
+              <div class="contact-val">
+                <a href="mailto:treznornx@gmail.com">treznornx@gmail.com</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-lead">
+          <h4>Chitro</h4>
+          <p>Anonymous conversations. Meaningful connections.</p>
+          <div class="footer-credit">A TREZNOR product</div>
+        </div>
+
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h5>Product</h5>
+            <ul>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#app-tour">App Tour</a></li>
+              <li><a href="#subscriptions">Subscriptions</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Legal & Trust</h5>
+            <ul>
+              <li><a href="#privacy">Privacy Policy</a></li>
+              <li><a href="#terms">Terms of Service</a></li>
+              <li><a href="#safety">Safety & Guidelines</a></li>
+              <li><a href="#contact">Contact Support</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bar">
+        <div>&copy; 2026 TREZNOR. All rights reserved.</div>
+        <div>Pure architectural anonymity.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       HIGH-PERFORMANCE NOISE ENGINE & FLUID UI INTERACTION SCRIPT
+       ========================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Ultra-lightweight GPU Noise Canvas Generator
+      const canvas = document.getElementById('noiseCanvas');
+      const ctx = canvas.getContext('2d', { alpha: false });
+      let w, h;
+
+      function resizeNoise() {
+        w = canvas.width = Math.floor(window.innerWidth / 2);
+        h = canvas.height = Math.floor(window.innerHeight / 2);
+      }
+      window.addEventListener('resize', resizeNoise, { passive: true });
+      resizeNoise();
+
+      function generateNoise() {
+        const idata = ctx.createImageData(w, h);
+        const buffer = new Uint32Array(idata.data.buffer);
+        const len = buffer.length;
+        for (let i = 0; i < len; i++) {
+          if (Math.random() < 0.08) {
+            buffer[i] = 0xffffffff;
+          } else {
+            buffer[i] = 0xff000000;
+          }
+        }
+        ctx.putImageData(idata, 0, 0);
+      }
+
+      let noiseFrame;
+      function loopNoise() {
+        generateNoise();
+        noiseFrame = setTimeout(() => {
+          requestAnimationFrame(loopNoise);
+        }, 1000 / 24); // Cap at 24fps for silky tactile analog grit without CPU consumption
+      }
+      loopNoise();
+
+      // 2. Mobile Drawer Toggle
+      const mobileBtn = document.getElementById('mobileBtn');
+      const mobileDrawer = document.getElementById('mobileDrawer');
+      const drawerItems = document.querySelectorAll('.drawer-item');
+
+      function toggleMenu() {
+        const isActive = mobileDrawer.classList.toggle('active');
+        document.body.style.overflow = isActive ? 'hidden' : '';
+      }
+
+      mobileBtn.addEventListener('click', toggleMenu);
+      drawerItems.forEach(item => {
+        item.addEventListener('click', () => {
+          mobileDrawer.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      });
+
+      // 3. High-Performance Hardware-Accelerated Accordion
+      const faqCards = document.querySelectorAll('.faq-card');
+
+      faqCards.forEach(card => {
+        const toggle = card.querySelector('.faq-toggle');
+        const tray = card.querySelector('.faq-tray');
+
+        toggle.addEventListener('click', () => {
+          const isOpen = card.classList.contains('active');
+
+          faqCards.forEach(otherCard => {
+            otherCard.classList.remove('active');
+            otherCard.querySelector('.faq-tray').style.maxHeight = null;
+          });
+
+          if (!isOpen) {
+            card.classList.add('active');
+            tray.style.maxHeight = tray.scrollHeight + 'px';
+          }
+        });
+      });
+
+      // 4. Smooth Anchor Linking with Dynamic Header Offset
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const targetEl = document.querySelector(targetId);
+          if (targetEl) {
+            e.preventDefault();
+            const headerOffset = 72;
+            const topPos = targetEl.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+            window.scrollTo({
+              top: topPos,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
